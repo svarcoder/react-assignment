@@ -6,9 +6,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { history } from "_helpers";
 import { authActions } from "_store";
 
-export { Login };
+export { Register };
 
-function Login() {
+function Register() {
 	const dispatch = useDispatch();
 	const authUser = useSelector((x) => x.auth);
 
@@ -29,22 +29,24 @@ function Login() {
 			.email("Must be a valid email")
 			.max(255)
 			.required("Email is required"),
+		name: Yup.string().required("Username is required"),
 		password: Yup.string().required("Password is required"),
 	});
+
 	const formOptions = { resolver: yupResolver(validationSchema) };
 
 	// get functions to build form with useForm() hook
 	const { register, handleSubmit, formState } = useForm(formOptions);
 	const { errors, isSubmitting } = formState;
 
-	function onSubmit({ email, password }) {
-		return dispatch(authActions.login({ email, password }));
+	function onSubmit({ name, password, email }) {
+		return dispatch(authActions.register({ name, password, email }));
 	}
 
 	return (
 		<div className='col-md-6 offset-md-3 mt-5'>
 			<div className='card'>
-				<h4 className='card-header'>Login</h4>
+				<h4 className='card-header'>Register</h4>
 				<div className='card-body'>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className='form-group'>
@@ -58,6 +60,16 @@ function Login() {
 							<div className='invalid-feedback'>{errors.email?.message}</div>
 						</div>
 						<div className='form-group'>
+							<label>Username</label>
+							<input
+								name='name'
+								type='text'
+								{...register("name")}
+								className={`form-control ${errors.name ? "is-invalid" : ""}`}
+							/>
+							<div className='invalid-feedback'>{errors.name?.message}</div>
+						</div>
+						<div className='form-group'>
 							<label>Password</label>
 							<input
 								name='password'
@@ -69,16 +81,16 @@ function Login() {
 							/>
 							<div className='invalid-feedback'>{errors.password?.message}</div>
 						</div>
-						<button disabled={isSubmitting} className='btn btn-primary'>
+						<button
+							className='btn btn-primary'
+							type='button'
+							onClick={() => history.navigate("/login")}>
+							Login
+						</button>
+						<button disabled={isSubmitting} className='btn btn-primary ml-2'>
 							{isSubmitting && (
 								<span className='spinner-border spinner-border-sm mr-1'></span>
 							)}
-							Login
-						</button>
-						<button
-							className='btn btn-primary ml-2'
-							type='button'
-							onClick={() => history.navigate("/register")}>
 							Register
 						</button>
 						{authUser?.error && (

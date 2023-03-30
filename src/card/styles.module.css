@@ -1,0 +1,25 @@
+.container {
+	background: lightblue;
+}
+
+.deck {
+	position: absolute;
+	width: 300px;
+	will-change: transform;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.deck > div {
+	touch-action: none;
+	background-size: auto 85%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 45vh;
+	max-width: 300px;
+	height: 85vh;
+	max-height: 570px;
+	will-change: transform;
+	border-radius: 10px;
+}
